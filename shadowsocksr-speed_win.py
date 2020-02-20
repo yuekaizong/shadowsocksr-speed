@@ -21,6 +21,8 @@ class DrawTable(object):
         header=[
         "name",
         "ip",
+		"host",
+		"port",
         "localPing",
         "ping",
         "upload",
@@ -41,6 +43,8 @@ class DrawTable(object):
             content=[
                 kwargs['name'],
                 kwargs['ip'],
+                kwargs['host'],
+                kwargs['port'],
                 kwargs['localPing'],
                 kwargs['ping'],
                 kwargs['upload'],
@@ -68,6 +72,7 @@ ssr_port=6665
 def connect_ssr(ssr):
 	result={}
 	result['host']=ssr['server']
+	result['port']=ssr['port']
 	result['remarks']=ssr['remarks']
 	result['ip']=''
 	result['download']=0
@@ -168,7 +173,8 @@ if len(argv)>1:
 		# print(x)
 		# print(x)
 else:
-	url=input("url:")
+	# url=input("url:")
+	url = "http://122.51.201.253:8082/app/appmanage/vpn/ssrSub?limit=100&urlGroup=BosLife"
 	headers = {'User-Agent':'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0'}
 	f=urllib.request.Request(url,headers=headers)
 	ssr_subscribe = urllib.request.urlopen(f).read().decode('utf-8') #获取ssr订阅链接中数据
@@ -189,6 +195,8 @@ for x in ssr_config:
 	table.append(
 		name=speed_result['remarks'],
 		ip=speed_result['ip'],
+		host=speed_result['host'],
+		port=speed_result['port'],
 		localPing=speed_result['ping_pc'],
 		ping=speed_result['ping'],
 		upload=speed_result['upload'],
@@ -198,3 +206,11 @@ for x in ssr_config:
 	)
 	print(table.str())
 	close_ssr()
+
+file_name = "ssr-result.txt"
+f = open(file_name,"a", encoding="utf-8")
+current_time = time.strftime('%Y_%m_%d %H_%M_%S',time.localtime(time.time()))
+f.write(current_time+'\n')
+f.write(table.str()+'\n')
+f.close()
+
